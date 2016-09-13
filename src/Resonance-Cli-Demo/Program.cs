@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.PlatformAbstractions;
 using Resonance;
 using Resonance.Models;
-using Resonance.Repo;
 using Resonance.Repo.Database;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Resonance_Cli_Demo
 {
