@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Resonance;
 using Resonance.Models;
 using Resonance.Repo;

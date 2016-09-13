@@ -6,12 +6,11 @@
   },
 
   "dependencies": {
-    "Resonance.Core": "0.1.2",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0",
     "Microsoft.Extensions.Configuration": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Microsoft.Extensions.PlatformAbstractions": "1.0.0"
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+    "Resonance.Core": "0.1.3-alpha"
   },
 
   "frameworks": {
