@@ -4,6 +4,7 @@ using Resonance;
 using Resonance.Models;
 using Resonance.Repo.Database;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -25,31 +26,29 @@ namespace Resonance_Cli_Demo
 
             // Set up DB connection
             var connectionString = config.GetConnectionString("Resonance");
-            var repo = new MsSqlEventingRepo(new SqlConnection(connectionString));
+            var repoFactory = new MsSqlEventingRepoFactory(connectionString);
 
             // Get a resonance publisher and consumer. DI takes care of creating the instances, passing required args to ctors, etc.
-            var publisher = new EventPublisher(repo);
-            var consumer = new EventConsumer(repo);
+            var publisher = new EventPublisher(repoFactory);
+            var consumer = new EventConsumer(repoFactory);
 
             // Make sure the topic exists
-            var topic = publisher.GetTopicByName("Demo Topic");
+            var topic = publisher.GetTopicByName("Resonance Demo Topic");
             if (topic == null)
                 topic = publisher.AddOrUpdateTopic(new Topic
                 {
-                    Name = "Demo Topic",
+                    Name = "Resonance Demo Topic",
                     Notes = "This topic is for demo purposes. Nothing to see here, move along!",
                 });
 
             // Create a subscription
-            var subscription = consumer.GetSubscriptionByName("Demo Subscription");
+            var subscription = consumer.GetSubscriptionByName("Resonance Demo Subscription");
             if (subscription == null)
                 subscription = consumer.AddOrUpdateSubscription(new Subscription
                 {
-                    Name = "Demo Subscription",
-                    DeliveryDelay = 3,
+                    Name = "Resonance Demo Subscription",
                     MaxDeliveries = 2,
-                    Ordered = true,
-                    TimeToLive = 60,
+                    Ordered = true, // Order on functional key (THIS is what you want, but never get with the commercial tools!)
                     TopicSubscriptions = new List<TopicSubscription> // A subscription can subscribe to multiple topics
                     {
                         new TopicSubscription // Subscribe to the topic created above
@@ -62,16 +61,17 @@ namespace Resonance_Cli_Demo
 
             // Now publish an event to the topic
             publisher.Publish(
-                topicName: "Demo Topic",
+                topicName: "Resonance Demo Topic", functionalKey: "ABC123",
                 headers: new Dictionary<string, string> { { "EventName", "PaymentReceived" }, { "MessageId", "12345" } },
                 payload: new Tuple<string, int, string>("Robert", 40, "Holland")); // Publish typed object (publisher takes care of serialization)
 
-            System.Threading.Thread.Sleep(3000); // The subscription has a delivery delay configured
-
+            // Let consume it
             var consEvent = consumer.ConsumeNext<Tuple<string, int, string>>( // Consume typed object (consumer takes care of deserialization)
-                "Demo Subscription", // Name of the subscription, remember: a subscription can subscribe to multiple topics, these will all be delivered together, ordered and all.
-                60); // Visibility timeout (seconds): the event is 'locked' for us during this time and cannot be consumed (eg by another thread). When not marked consumed/failed, it will be redelivered again after this timeout expires.
-            if (consEvent != null)
+                "Resonance Demo Subscription", // Name of the subscription, remember: a subscription can subscribe to multiple topics, these will all be delivered together, ordered and all.
+                60) // Visibility timeout (seconds): the event is 'locked' for us during this time and cannot be consumed (eg by another thread). When not marked consumed/failed, it will be redelivered again after this timeout expires.
+                .FirstOrDefault(); // We only consume the first result (we didn't ask for more)
+
+            if (consEvent != null) // Found it!
             {
                 try
                 {
