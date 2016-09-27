@@ -4,16 +4,13 @@ using Resonance;
 using Resonance.Models;
 using Resonance.Repo.Database;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Linq;
 
 namespace Resonance_Cli_Demo
 {
     public class Program
     {
-        private static IServiceProvider serviceProvider;
-
         public static void Main(string[] args)
         {
             // Configfile is used to read connectionstring from
@@ -53,7 +50,7 @@ namespace Resonance_Cli_Demo
                     {
                         new TopicSubscription // Subscribe to the topic created above
                         {
-                            TopicId = topic.Id,
+                            TopicId = topic.Id.Value,
                             Enabled = true,
                         },
                     },
@@ -90,8 +87,8 @@ namespace Resonance_Cli_Demo
             }
 
             // Topic and subscription are removed. However, all published and consumed events are not removed.
-            consumer.DeleteSubscription(subscription.Id);
-            publisher.DeleteTopic(topic.Id, true);
+            consumer.DeleteSubscription(subscription.Id.Value);
+            publisher.DeleteTopic(topic.Id.Value, true);
         }
     }
 }
