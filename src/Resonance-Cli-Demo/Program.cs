@@ -16,7 +16,6 @@ namespace Resonance_Cli_Demo
             // Configfile is used to read connectionstring from
             var builder = new ConfigurationBuilder()
                 .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
-                //.SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             //builder.AddEnvironmentVariables();
             var config = builder.Build();
@@ -81,7 +80,7 @@ namespace Resonance_Cli_Demo
                 catch (Exception ex)
                 {
                     // Warning: when marking an event as failed, it will NOT be redelivered/retried!
-                    // Doing nothing here is fine too: when the lock is released, it will be delivered again
+                    // Doing nothing here is fine too: when the lock expires, it will be delivered again/retried
                     consumer.MarkFailed(consEvent.Id, consEvent.DeliveryKey, Reason.Other(ex.ToString()));
                 }
             }

@@ -10,7 +10,7 @@
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
-    "Resonance.Core": "0.5.6"
+    "Resonance.Core": "0.6.4"
   },
 
   "frameworks": {
